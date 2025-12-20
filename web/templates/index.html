@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Risk Prediction - Explainable AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Credit Risk Prediction</h1>
+            <p class="subtitle">Explainable AI for Lending Decisions</p>
+        </header>
+
+        <main>
+            <section class="info-section">
+                <h2>Welcome</h2>
+                <p>
+                    This interactive tool predicts credit risk using machine learning models 
+                    with transparent, explainable AI capabilities. Understand not just the 
+                    prediction, but also why the model made that decision.
+                </p>
+            </section>
+
+            <section class="prediction-section">
+                <h2>Make a Prediction</h2>
+                <p class="coming-soon">
+                    🚧 Prediction interface coming in Milestone 2 (February 2026)
+                </p>
+                
+                <!-- Future prediction form will go here -->
+                <div class="form-placeholder">
+                    <p>The prediction form will include:</p>
+                    <ul>
+                        <li>Applicant information input fields</li>
+                        <li>Real-time risk prediction</li>
+                        <li>Visual explanation of decision factors</li>
+                        <li>Feature importance charts</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="about-section">
+                <h2>About This Project</h2>
+                <div class="features">
+                    <div class="feature">
+                        <h3>📊 Multiple Models</h3>
+                        <p>Logistic Regression, Random Forest, XGBoost</p>
+                    </div>
+                    <div class="feature">
+                        <h3>🔍 Explainable</h3>
+                        <p>SHAP/LIME for transparent decisions</p>
+                    </div>
+                    <div class="feature">
+                        <h3>⚡ Real-time</h3>
+                        <p>Instant predictions and explanations</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>BSc Thesis Project - Eötvös Loránd University</p>
+            <p>Kafi MD Abdullah Hel (N06WMD)</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
