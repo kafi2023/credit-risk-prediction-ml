@@ -78,10 +78,23 @@ The Credit Risk Prediction system follows a modular architecture with clear sepa
 - **Frontend**: HTML, CSS, JavaScript
 - **Data**: pandas, numpy
 
-## Future Enhancements (Post-Milestone 1)
+## Implemented Modules
 
+| Module | File | Description |
+|--------|------|-------------|
+| Data Loader | `src/preprocessing/data_loader.py` | Downloads UCI German Credit, decodes categories |
+| Preprocessor | `src/preprocessing/preprocessor.py` | ColumnTransformer (StandardScaler + OneHotEncoder), SMOTE |
+| Training | `src/training/train_models.py` | LR, RF, XGBoost factory + train_all_models |
+| Evaluation | `src/training/evaluate.py` | Metrics, CV, comparison tables |
+| SHAP | `src/explainability/shap_explainer.py` | TreeSHAP, LinearSHAP, KernelSHAP fallback |
+| LIME | `src/explainability/lime_explainer.py` | LimeTabularExplainer wrapper |
+| Predictor | `src/prediction/predictor.py` | End-to-end: validate → transform → predict → explain |
+| Validator | `src/prediction/input_validator.py` | Range & category validation, schema generation |
+| Flask API | `web/app.py` | /predict, /schema, /models, /health endpoints |
+
+## Future Enhancements (Milestone 3+)
+
+- Interactive web UI with SHAP visualisation
 - Database integration for storing predictions
-- User authentication and authorization
 - Model versioning and A/B testing
-- API rate limiting and caching
 - Deployment on cloud platform

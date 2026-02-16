@@ -95,25 +95,31 @@ pytest --cov=src --cov-report=html
 
 ## Milestones
 
-### Milestone 1 (Dec 20, 2025) - Current
+### Milestone 1 (Dec 20, 2025) — ✅ COMPLETED
 - [x] Set up repository
 - [x] Create project skeleton
-- [ ] Research datasets
-- [ ] Research algorithms
-- [ ] Create architecture diagram
-- [ ] Initial prototype
+- [x] Research datasets (→ DATASET_RESEARCH.md)
+- [x] Research algorithms (→ ALGORITHM_RESEARCH.md)
+- [x] Research explainability (→ EXPLAINABILITY_RESEARCH.md)
+- [x] Create architecture diagram (→ ARCHITECTURE.md)
 
-### Milestone 2 (Feb 20, 2026)
-- [ ] Implement data preprocessing
-- [ ] Train ML models
-- [ ] Integrate backend
-- [ ] Unit tests
+### Milestone 2 (Feb 20, 2026) — ✅ COMPLETED
+- [x] Download & load German Credit Dataset (data_loader.py)
+- [x] Exploratory Data Analysis notebook (01_eda.ipynb)
+- [x] Preprocessing pipeline with ColumnTransformer (preprocessor.py)
+- [x] Train LR, RF, XGBoost models (train_models.py)
+- [x] Evaluation module with metrics & CV (evaluate.py)
+- [x] SHAP explainability module (shap_explainer.py)
+- [x] LIME explainability module (lime_explainer.py)
+- [x] Prediction module with input validation (predictor.py, input_validator.py)
+- [x] Flask backend integration (/predict, /schema, /models)
+- [x] Unit tests — 103 tests, 84% coverage
 
 ### Milestone 3 (Mar 25, 2026)
-- [ ] Build UI
-- [ ] Improve model performance
+- [ ] Build interactive UI with form & visualisations
+- [ ] Improve model performance (hyperparameter tuning)
 - [ ] Integration tests
-- [ ] Documentation
+- [ ] Documentation improvements
 
 ### Milestone 4 (Apr 15, 2026)
 - [ ] Final testing

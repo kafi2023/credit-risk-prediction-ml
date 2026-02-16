@@ -64,13 +64,22 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Training Models
+### 1. Download & Prepare Data
 
 ```bash
-python src/training/train_models.py
+python -m src.preprocessing.data_loader      # downloads German Credit from UCI
+python -m src.preprocessing.preprocessor     # builds train/test splits
 ```
 
-### Running the Web Application
+### 2. Train Models
+
+```bash
+python -m src.training.train_models
+```
+
+Trains Logistic Regression, Random Forest, and XGBoost. Models are saved to `models/saved_models/`.
+
+### 3. Run the Web Application
 
 ```bash
 python web/app.py
@@ -78,10 +87,36 @@ python web/app.py
 
 Access the application at `http://localhost:5000`
 
+### 4. API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | GET | Web UI |
+| `/predict` | POST | Predict credit risk (JSON body with 20 features) |
+| `/schema` | GET | Input field schema for dynamic forms |
+| `/models` | GET | List available trained models |
+| `/health` | GET | Health check |
+
+### 5. Run Tests
+
+```bash
+pytest tests/ --cov=src --cov=web
+```
+
+Current status: **103 tests passing, 84% coverage**.
+
+## Current Model Performance
+
+| Model | Accuracy | AUC-ROC | F1 |
+|-------|----------|---------|-----|
+| Logistic Regression | 0.700 | **0.806** | 0.490 |
+| Random Forest | 0.715 | 0.790 | 0.463 |
+| XGBoost | 0.780 | 0.789 | 0.387 |
+
 ## Milestones
 
-- **Milestone 1** (Dec 20, 2025): Initial setup, research, and project skeleton ✓
-- **Milestone 2** (Feb 20, 2026): Core ML implementation and backend
+- **Milestone 1** (Dec 20, 2025): Initial setup, research, and project skeleton ✅
+- **Milestone 2** (Feb 20, 2026): Core ML implementation and backend ✅
 - **Milestone 3** (Mar 25, 2026): UI development and optimization
 - **Milestone 4** (Apr 15, 2026): Finalization and documentation
 
