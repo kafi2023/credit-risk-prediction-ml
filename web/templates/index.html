@@ -25,19 +25,35 @@
 
             <section class="prediction-section">
                 <h2>Make a Prediction</h2>
-                <p class="coming-soon">
-                    🚧 Prediction interface coming in Milestone 2 (February 2026)
-                </p>
-                
-                <!-- Future prediction form will go here -->
-                <div class="form-placeholder">
-                    <p>The prediction form will include:</p>
-                    <ul>
-                        <li>Applicant information input fields</li>
-                        <li>Real-time risk prediction</li>
-                        <li>Visual explanation of decision factors</li>
-                        <li>Feature importance charts</li>
-                    </ul>
+                <div class="row">
+                    <div class="col-md-6 form-container">
+                        <form id="prediction-form">
+                            <div class="form-group mb-3">
+                                <label for="model-select">Select Model</label>
+                                <select id="model-select" name="model" class="form-control" required>
+                                    <option value="" disabled selected>Loading models...</option>
+                                </select>
+                            </div>
+                            <hr>
+                            <div id="dynamic-form-fields" class="dynamic-grid">
+                                <p>Loading form...</p>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3 w-100" id="predict-btn">Predict Credit Risk</button>
+                        </form>
+                    </div>
+
+                    <div class="col-md-6 results-container">
+                        <div id="results-card" style="display: none;">
+                            <h3>Prediction Result</h3>
+                            <div id="prediction-result" class="prediction-alert"></div>
+                            
+                            <h4>Explainability (SHAP)</h4>
+                            <p class="small text-muted">Feature contributions to the model's decision</p>
+                            <div class="chart-container">
+                                <canvas id="shapChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -66,6 +82,8 @@
         </footer>
     </div>
 
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
