@@ -115,11 +115,11 @@ pytest --cov=src --cov-report=html
 - [x] Flask backend integration (/predict, /schema, /models)
 - [x] Unit tests — 103 tests, 84% coverage
 
-### Milestone 3 (Mar 25, 2026)
-- [ ] Build interactive UI with form & visualisations
-- [ ] Improve model performance (hyperparameter tuning)
-- [ ] Integration tests
-- [ ] Documentation improvements
+### Milestone 3 (Mar 25, 2026) — ✅ COMPLETED
+- [x] Build interactive UI with form & visualisations
+- [x] Improve model performance (hyperparameter tuning)
+- [x] Integration tests
+- [x] Documentation improvements
 
 ### Milestone 4 (Apr 15, 2026)
 - [ ] Final testing

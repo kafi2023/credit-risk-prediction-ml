@@ -109,15 +109,15 @@ Current status: **103 tests passing, 84% coverage**.
 
 | Model | Accuracy | AUC-ROC | F1 |
 |-------|----------|---------|-----|
-| Logistic Regression | 0.700 | **0.806** | 0.490 |
-| Random Forest | 0.715 | 0.790 | 0.463 |
-| XGBoost | 0.780 | 0.789 | 0.387 |
+| Logistic Regression | 0.710 | 0.785 | 0.594 |
+| Random Forest | 0.726 | **0.794** | 0.604 |
+| XGBoost | 0.736 | 0.788 | 0.556 |
 
 ## Milestones
 
 - **Milestone 1** (Dec 20, 2025): Initial setup, research, and project skeleton ✅
 - **Milestone 2** (Feb 20, 2026): Core ML implementation and backend ✅
-- **Milestone 3** (Mar 25, 2026): UI development and optimization
+- **Milestone 3** (Mar 25, 2026): UI development and optimization ✅
 - **Milestone 4** (Apr 15, 2026): Finalization and documentation
 
 ## Technologies
