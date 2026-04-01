@@ -1,6 +1,3 @@
-"""
-Flask web application for Credit Risk Prediction
-"""
 from flask import Flask, render_template, request, jsonify
 import sys
 from pathlib import Path

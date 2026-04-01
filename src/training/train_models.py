@@ -10,6 +10,7 @@ from pathlib import Path
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
 from xgboost import XGBClassifier
 
 from src.preprocessing.preprocessor import (
@@ -92,6 +93,7 @@ def train_all_models(
     X_train: np.ndarray,
     y_train: np.ndarray,
     save: bool = True,
+    tune: bool = False,
 ) -> dict:
     """Train LR, RF, and XGBoost. Return dict {name: fitted_model}."""
     models = {
@@ -100,9 +102,46 @@ def train_all_models(
         "XGBoost": build_xgboost(y_train=y_train),
     }
 
+    if tune:
+        models["Random Forest"].tune = True
+        models["XGBoost"].tune = True
+
     for name, model in models.items():
         print(f"  Training {name} …")
-        model.fit(X_train, y_train)
+        
+        if name == "Random Forest" and getattr(model, "tune", False):
+            # Hyperparameter tuning for Random Forest
+            param_grid = {
+                'n_estimators': [100, 200, 300],
+                'max_depth': [None, 10, 20],
+                'min_samples_split': [2, 5, 20]
+            }
+            grid_search = GridSearchCV(
+                RandomForestClassifier(random_state=42, class_weight="balanced"),
+                param_grid, cv=3, scoring='roc_auc', n_jobs=-1
+            )
+            grid_search.fit(X_train, y_train)
+            model = grid_search.best_estimator_
+            models[name] = model
+            print(f"    -> Best params: {grid_search.best_params_}")
+            
+        elif name == "XGBoost" and getattr(model, "tune", False):
+            # Hyperparameter tuning for XGBoost
+            param_grid = {
+                'n_estimators': [100, 200],
+                'max_depth': [3, 6, 9],
+                'learning_rate': [0.01, 0.1, 0.2]
+            }
+            grid_search = GridSearchCV(
+                XGBClassifier(scale_pos_weight=_class_weight_ratio(y_train), random_state=42, eval_metric="logloss"),
+                param_grid, cv=3, scoring='roc_auc', n_jobs=-1
+            )
+            grid_search.fit(X_train, y_train)
+            model = grid_search.best_estimator_
+            models[name] = model
+            print(f"    -> Best params: {grid_search.best_params_}")
+        else:
+            model.fit(X_train, y_train)
 
     if save:
         MODELS_DIR.mkdir(parents=True, exist_ok=True)
@@ -142,7 +181,7 @@ if __name__ == "__main__":
 
     # 2. Train models
     print("\n2️⃣  Training models …")
-    models = train_all_models(X_train, y_train, save=True)
+    models = train_all_models(X_train, y_train, save=True, tune=True)
 
     # 3. Evaluate on test set
     print("\n3️⃣  Evaluating on test set …")
