@@ -547,51 +547,51 @@ The following figures document the complete system design and user-facing implem
 
 ### Use Case, User Flow, and Sequence Diagrams
 
-![Use Case Diagram](images/use-case-diagram.png){ width=90% }
+![Use Case Diagram](images/use-case-diagram.png){ width=75% }
 
-![User Flow Diagram](images/user-journey.png){ width=90% }
+![User Flow Diagram](images/user-journey.png){ width=75% }
 
-![Sequence Diagram for Prediction Flow](images/sequence-flow-diagram.png){ width=90% }
+![Sequence Diagram for Prediction Flow](images/sequence-flow-diagram.png){ width=75% }
 
 ### Data Flow, Component, State, and Class Diagrams
 
-![Data Flow Diagram](images/data-flow-diagram.png){ width=90% }
+![Data Flow Diagram](images/data-flow-diagram.png){ width=75% }
 
-![Component Diagram](images/component-diagram.png){ width=90% }
+![Component Diagram](images/component-diagram.png){ width=75% }
 
-![State Diagram](images/state-diagram.png){ width=90% }
+![State Diagram](images/state-diagram.png){ width=75% }
 
-![Class Diagram](images/class-diagram.png){ width=90% }
+![Class Diagram](images/class-diagram.png){ width=75% }
 
 ### System and Machine Learning Architecture
 
-![System Architecture Diagram](images/system-architecture-diagram.png){ width=90% }
+![System Architecture Diagram](images/system-architecture-diagram.png){ width=75% }
 
-![Machine Learning Pipeline](images/ml-pipeline.png){ width=90% }
+![Machine Learning Pipeline](images/ml-pipeline.png){ width=75% }
 
 ### Web Tool Screenshots
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.82\textwidth,keepaspectratio]{images/web page 1.png}
+\includegraphics[width=0.75\textwidth,keepaspectratio]{images/web page 1.png}
 \caption{Web Page Home Screenshot}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.82\textwidth,keepaspectratio]{images/filling the fields.png}
+\includegraphics[width=0.75\textwidth,keepaspectratio]{images/filling the fields.png}
 \caption{Form Filling Screenshot}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.82\textwidth,keepaspectratio]{images/results when you fill the fields.png}
+\includegraphics[width=0.75\textwidth,keepaspectratio]{images/results when you fill the fields.png}
 \caption{Filled Form Result Screenshot}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.82\textwidth,keepaspectratio]{images/web page 2.png}
+\includegraphics[width=0.75\textwidth,keepaspectratio]{images/web page 2.png}
 \caption{Web Page Detail Screenshot}
 \end{figure}
 
@@ -610,7 +610,7 @@ The screenshot below captures a successful execution of the web application test
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.82\textwidth,keepaspectratio]{images/test-results.png}
+\includegraphics[width=0.75\textwidth,keepaspectratio]{images/test-results.png}
 \caption{Unit Test Execution Result}
 \end{figure}
 
