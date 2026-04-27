@@ -4,6 +4,33 @@ Configuration settings for the Credit Risk Prediction application
 import os
 from pathlib import Path
 
+
+def _get_env(name: str, default: str) -> str:
+    """Return an environment variable or the provided default.
+
+    Treat empty strings as missing so deployment platforms that inject
+    blank values do not break module import time configuration.
+    """
+    value = os.environ.get(name)
+    if value is None or value == "":
+        return default
+    return value
+
+
+def _get_bool_env(name: str, default: bool) -> bool:
+    """Parse a boolean environment variable with a safe fallback."""
+    value = _get_env(name, "true" if default else "false").strip().lower()
+    return value in {"1", "true", "yes", "on"}
+
+
+def _get_int_env(name: str, default: int) -> int:
+    """Parse an integer environment variable with a safe fallback."""
+    raw_value = _get_env(name, str(default)).strip()
+    try:
+        return int(raw_value)
+    except (TypeError, ValueError):
+        return default
+
 # Base directory
 BASE_DIR = Path(__file__).parent
 
@@ -19,10 +46,10 @@ SAVED_MODELS_DIR = MODELS_DIR / 'saved_models'
 # Web application settings
 class Config:
     """Flask application configuration"""
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
-    DEBUG = os.environ.get('FLASK_DEBUG', 'True') == 'True'
-    HOST = os.environ.get('FLASK_HOST', '0.0.0.0')
-    PORT = int(os.environ.get('FLASK_PORT', 5000))
+    SECRET_KEY = _get_env('SECRET_KEY', 'dev-secret-key-change-in-production')
+    DEBUG = _get_bool_env('FLASK_DEBUG', True)
+    HOST = _get_env('FLASK_HOST', '0.0.0.0')
+    PORT = _get_int_env('FLASK_PORT', 5000)
 
 # Model training settings
 class ModelConfig:
