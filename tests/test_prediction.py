@@ -3,7 +3,6 @@ Unit tests for prediction module and input validation.
 """
 import pytest
 import warnings
-import numpy as np
 
 from src.prediction.input_validator import validate_input, get_input_schema
 from src.prediction.predictor import CreditRiskPredictor

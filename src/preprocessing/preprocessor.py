@@ -13,7 +13,7 @@ import joblib
 import numpy as np
 import pandas as pd
 from pathlib import Path
-from typing import Tuple, Optional
+from typing import Tuple
 
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
@@ -137,8 +137,24 @@ def _save_artifacts(X_train, X_test, y_train, y_test, preprocessor) -> None:
     joblib.dump(preprocessor, MODELS_DIR / "preprocessor.joblib")
 
 
+def _ensure_artifacts() -> None:
+    """Create processed arrays and the fitted preprocessor if they are missing."""
+    expected_files = [
+        PROCESSED_DIR / "X_train.npy",
+        PROCESSED_DIR / "X_test.npy",
+        PROCESSED_DIR / "y_train.npy",
+        PROCESSED_DIR / "y_test.npy",
+        MODELS_DIR / "preprocessor.joblib",
+    ]
+    if all(path.exists() for path in expected_files):
+        return
+
+    prepare_data(save=True)
+
+
 def load_processed_data() -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Load previously saved processed data from disk."""
+    _ensure_artifacts()
     X_train = np.load(PROCESSED_DIR / "X_train.npy")
     X_test = np.load(PROCESSED_DIR / "X_test.npy")
     y_train = np.load(PROCESSED_DIR / "y_train.npy")
@@ -148,6 +164,7 @@ def load_processed_data() -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarra
 
 def load_preprocessor() -> ColumnTransformer:
     """Load the fitted preprocessor from disk."""
+    _ensure_artifacts()
     return joblib.load(MODELS_DIR / "preprocessor.joblib")
 
 
@@ -165,7 +182,7 @@ if __name__ == "__main__":
     X_tr, X_te, y_tr, y_te, prep = prepare_data(use_smote=False, save=True)
 
     feature_names = get_feature_names(prep)
-    print(f"\n✅  Done!")
+    print("\n✅  Done!")
     print(f"  X_train : {X_tr.shape}")
     print(f"  X_test  : {X_te.shape}")
     print(f"  y_train : {y_tr.shape}  (Bad={int(np.sum(y_tr))}, Good={int(len(y_tr) - np.sum(y_tr))})")

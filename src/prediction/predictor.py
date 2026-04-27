@@ -6,16 +6,15 @@ validates, transforms, predicts, and explains.
 """
 
 import numpy as np
-import joblib
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from src.preprocessing.preprocessor import (
     load_preprocessor,
     load_processed_data,
     get_feature_names,
 )
-from src.training.train_models import load_model
+from src.training.train_models import load_model, ensure_trained_models
 from src.prediction.input_validator import validate_input, get_input_schema
 from src.explainability.shap_explainer import explain_prediction as shap_explain
 
@@ -112,6 +111,7 @@ class CreditRiskPredictor:
     @staticmethod
     def available_models():
         """List model slugs that have been saved."""
+        ensure_trained_models()
         model_dir = Path(SAVED_MODELS_DIR)
         exclude = {"preprocessor"}
         return [p.stem for p in model_dir.glob("*.joblib") if p.stem not in exclude]

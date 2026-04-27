@@ -3,9 +3,8 @@ Unit tests for model training and evaluation.
 """
 import pytest
 import numpy as np
-from pathlib import Path
 
-from src.preprocessing.preprocessor import prepare_data, load_processed_data
+from src.preprocessing.preprocessor import load_processed_data
 from src.training.train_models import (
     build_logistic_regression,
     build_random_forest,

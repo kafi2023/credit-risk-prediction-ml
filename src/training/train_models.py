@@ -6,7 +6,6 @@ compare results, and persist the best models.
 
 import joblib
 import numpy as np
-from pathlib import Path
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
@@ -25,6 +24,13 @@ from src.training.evaluate import (
     cv_comparison_table,
     print_classification_report,
 )
+
+
+SUPPORTED_MODEL_NAMES = {
+    "logistic_regression": "Logistic Regression",
+    "random_forest": "Random Forest",
+    "xgboost": "XGBoost",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -52,6 +58,10 @@ def build_logistic_regression(**kwargs) -> LogisticRegression:
 
 
 def build_random_forest(**kwargs) -> RandomForestClassifier:
+    """Create a RandomForestClassifier with project-default hyperparameters.
+
+    Returns a configured but unfitted RandomForestClassifier.
+    """
     defaults = dict(
         n_estimators=200,
         max_depth=10,
@@ -67,6 +77,11 @@ def build_random_forest(**kwargs) -> RandomForestClassifier:
 
 
 def build_xgboost(y_train=None, **kwargs) -> XGBClassifier:
+    """Create an XGBClassifier configured for the project.
+
+    If `y_train` is provided the `scale_pos_weight` is calculated from
+    the class balance to mitigate class imbalance in training.
+    """
     defaults = dict(
         n_estimators=200,
         max_depth=6,
@@ -153,9 +168,33 @@ def train_all_models(
     return models
 
 
+def ensure_trained_models() -> None:
+    """Create the saved model artifacts if any supported model is missing.
+
+    This helper will trigger training using persisted processed data when
+    one or more model artifact files are not present in the models directory.
+    It is safe to call repeatedly from runtime code.
+    """
+    expected_paths = [MODELS_DIR / f"{name}.joblib" for name in SUPPORTED_MODEL_NAMES]
+    if all(path.exists() for path in expected_paths):
+        return
+
+    X_train, _, y_train, _ = load_processed_data()
+    train_all_models(X_train, y_train, save=True)
+
+
 def load_model(name: str):
     """Load a saved model by slug name (e.g. 'random_forest')."""
+    if name not in SUPPORTED_MODEL_NAMES:
+        raise FileNotFoundError(f"Unknown model: {name}")
+
     path = MODELS_DIR / f"{name}.joblib"
+    if not path.exists():
+        ensure_trained_models()
+
+    if not path.exists():
+        raise FileNotFoundError(path)
+
     return joblib.load(path)
 
 

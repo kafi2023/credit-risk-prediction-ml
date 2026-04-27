@@ -3,7 +3,6 @@ Additional tests to increase code coverage.
 """
 import pytest
 import warnings
-import numpy as np
 
 from src.preprocessing.preprocessor import load_processed_data, load_preprocessor, get_feature_names
 from src.training.train_models import load_model
@@ -11,9 +10,6 @@ from src.explainability.shap_explainer import (
     plot_waterfall,
     plot_summary,
     plot_bar_importance,
-    _compute_shap_values,
-    _compute_shap_matrix,
-    create_explainer,
 )
 from src.explainability.lime_explainer import LimeExplainerWrapper, _risk_level
 from src.training.evaluate import (
@@ -25,8 +21,6 @@ from src.training.evaluate import (
 )
 from src.training.train_models import (
     build_logistic_regression,
-    build_random_forest,
-    build_xgboost,
     train_all_models,
 )
 

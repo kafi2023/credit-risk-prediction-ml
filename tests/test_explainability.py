@@ -3,7 +3,6 @@ Unit tests for SHAP and LIME explainability modules.
 """
 import pytest
 import warnings
-import numpy as np
 
 from src.preprocessing.preprocessor import load_processed_data, load_preprocessor, get_feature_names
 from src.training.train_models import load_model

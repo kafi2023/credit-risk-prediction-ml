@@ -1,10 +1,7 @@
 """
 Unit tests for data_loader module.
 """
-import pytest
 import pandas as pd
-import numpy as np
-from pathlib import Path
 
 from src.preprocessing.data_loader import (
     load_german_credit,

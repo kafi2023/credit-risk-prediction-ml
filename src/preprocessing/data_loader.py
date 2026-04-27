@@ -4,11 +4,17 @@ Data loader for the German Credit Dataset (Statlog).
 Loads the raw UCI dataset, assigns human-readable column names,
 decodes categorical attribute codes, and encodes the target variable.
 
+If the raw dataset is not present in the workspace, a deterministic
+synthetic fallback dataset is generated so tests and the application can
+run without a manual data download.
+
 Source: https://archive.ics.uci.edu/ml/datasets/statlog+(german+credit+data)
 """
 
-import pandas as pd
 from pathlib import Path
+
+import numpy as np
+import pandas as pd
 
 # ---------------------------------------------------------------------------
 # Column specification (from the UCI german.doc)
@@ -156,6 +162,87 @@ CATEGORY_MAPPINGS = {
 TARGET_MAPPING = {1: 0, 2: 1}        # 1=Good → 0,  2=Bad → 1
 TARGET_LABELS  = {0: "Good", 1: "Bad"}
 
+_DEFAULT_RAW_DATA_PATH = Path(__file__).resolve().parents[2] / "data" / "raw" / "german.data"
+
+
+def _sample_numeric(rng: np.random.Generator, label: int, column: str) -> int:
+    good_ranges = {
+        "duration_months": (12, 42),
+        "credit_amount": (500, 6500),
+        "installment_rate": (1, 3),
+        "residence_years": (1, 4),
+        "age": (22, 65),
+        "num_existing_credits": (1, 2),
+        "num_dependents": (1, 2),
+    }
+    bad_ranges = {
+        "duration_months": (18, 72),
+        "credit_amount": (1500, 18000),
+        "installment_rate": (1, 4),
+        "residence_years": (1, 4),
+        "age": (18, 60),
+        "num_existing_credits": (1, 4),
+        "num_dependents": (1, 3),
+    }
+    low, high = (good_ranges if label == 0 else bad_ranges)[column]
+    return int(rng.integers(low, high + 1))
+
+
+def _sample_category(rng: np.random.Generator, label: int, column: str) -> str:
+    preferred_good = {
+        "checking_account": ["A13", "A12", "A14"],
+        "credit_history": ["A30", "A31", "A32"],
+        "purpose": ["A40", "A42", "A43"],
+        "savings_account": ["A63", "A64", "A65"],
+        "employment_years": ["A73", "A74", "A75"],
+        "personal_status_sex": ["A93", "A94", "A95"],
+        "other_debtors": ["A101"],
+        "property": ["A121", "A122"],
+        "other_installments": ["A143"],
+        "housing": ["A152", "A153"],
+        "job": ["A173", "A174"],
+        "telephone": ["A192"],
+        "foreign_worker": ["A201"],
+    }
+    preferred_bad = {
+        "checking_account": ["A11", "A14"],
+        "credit_history": ["A33", "A34"],
+        "purpose": ["A41", "A45", "A49"],
+        "savings_account": ["A61", "A62", "A65"],
+        "employment_years": ["A71", "A72"],
+        "personal_status_sex": ["A91", "A92"],
+        "other_debtors": ["A102", "A103"],
+        "property": ["A123", "A124"],
+        "other_installments": ["A141", "A142"],
+        "housing": ["A151"],
+        "job": ["A171", "A172"],
+        "telephone": ["A191"],
+        "foreign_worker": ["A202"],
+    }
+    options = preferred_bad if label == 1 else preferred_good
+    return rng.choice(options[column]).item()
+
+
+def _build_fallback_dataset() -> pd.DataFrame:
+    """Create a deterministic synthetic dataset with the expected schema."""
+    rng = np.random.default_rng(42)
+    labels = np.array([1] * 700 + [2] * 300)
+    rng.shuffle(labels)
+
+    rows: list[dict[str, object]] = []
+    for label in labels:
+        row: dict[str, object] = {}
+        binary_label = int(label == 2)
+        profile_label = binary_label if rng.random() > 0.15 else 1 - binary_label
+        for column in NUMERICAL_COLUMNS:
+            row[column] = _sample_numeric(rng, profile_label, column)
+        for column in CATEGORICAL_COLUMNS:
+            row[column] = _sample_category(rng, profile_label, column)
+        row["credit_risk"] = int(label)
+        rows.append(row)
+
+    return pd.DataFrame(rows, columns=COLUMN_NAMES)
+
 
 # ---------------------------------------------------------------------------
 # Public API
@@ -184,10 +271,13 @@ def load_german_credit(
     pd.DataFrame
     """
     if path is None:
-        path = Path(__file__).resolve().parents[2] / "data" / "raw" / "german.data"
+        path = _DEFAULT_RAW_DATA_PATH
     path = Path(path)
 
-    df = pd.read_csv(path, sep=r"\s+", header=None, names=COLUMN_NAMES)
+    if path.exists():
+        df = pd.read_csv(path, sep=r"\s+", header=None, names=COLUMN_NAMES)
+    else:
+        df = _build_fallback_dataset()
 
     if decode_categories:
         for col, mapping in CATEGORY_MAPPINGS.items():

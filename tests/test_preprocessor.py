@@ -3,8 +3,6 @@ Unit tests for the preprocessing pipeline.
 """
 import pytest
 import numpy as np
-import pandas as pd
-from pathlib import Path
 
 from src.preprocessing.preprocessor import (
     build_preprocessor,
@@ -14,8 +12,6 @@ from src.preprocessing.preprocessor import (
     get_feature_names,
 )
 from src.preprocessing.data_loader import (
-    load_german_credit,
-    get_feature_target_split,
     NUMERICAL_COLUMNS,
     CATEGORICAL_COLUMNS,
 )

@@ -81,22 +81,24 @@ def _compute_shap_values(explainer, X: np.ndarray):
 
     # Old-style (TreeExplainer / LinearExplainer)
     shap_values = explainer.shap_values(X)
-    sv = np.array(shap_values)
 
-    # 3-D: (n_samples, n_features, n_classes) — SHAP 0.49 TreeExplainer
-    if sv.ndim == 3:
-        shap_vals = sv[:, :, 1].squeeze()   # class-1
-        ev = np.atleast_1d(explainer.expected_value)
-        base_value = float(ev[1]) if len(ev) > 1 else float(ev[0])
     # list of 2 arrays: older SHAP TreeExplainer
-    elif isinstance(shap_values, list) and len(shap_values) == 2:
-        shap_vals = np.array(shap_values[1]).squeeze()
+    if isinstance(shap_values, list) and len(shap_values) == 2:
+        shap_vals = np.asarray(shap_values[1]).squeeze()
         base_value = float(np.atleast_1d(explainer.expected_value)[1])
-    # 2-D: (n_samples, n_features) — LinearExplainer
     else:
-        shap_vals = sv.squeeze()
-        ev = np.atleast_1d(explainer.expected_value)
-        base_value = float(ev[1]) if len(ev) > 1 else float(ev[0])
+        sv = np.asarray(shap_values)
+
+        # 3-D: (n_samples, n_features, n_classes) — SHAP 0.49 TreeExplainer
+        if sv.ndim == 3:
+            shap_vals = sv[:, :, 1].squeeze()   # class-1
+            ev = np.atleast_1d(explainer.expected_value)
+            base_value = float(ev[1]) if len(ev) > 1 else float(ev[0])
+        # 2-D: (n_samples, n_features) — LinearExplainer
+        else:
+            shap_vals = sv.squeeze()
+            ev = np.atleast_1d(explainer.expected_value)
+            base_value = float(ev[1]) if len(ev) > 1 else float(ev[0])
 
     if shap_vals.ndim > 1:
         shap_vals = shap_vals[0]
@@ -114,12 +116,14 @@ def _compute_shap_matrix(explainer, X: np.ndarray):
         return vals
 
     shap_values = explainer.shap_values(X)
-    sv = np.array(shap_values)
+
+    if isinstance(shap_values, list) and len(shap_values) == 2:
+        return np.asarray(shap_values[1])
+
+    sv = np.asarray(shap_values)
 
     if sv.ndim == 3:
         return sv[:, :, 1]
-    elif isinstance(shap_values, list) and len(shap_values) == 2:
-        return np.array(shap_values[1])
     return sv if sv.ndim == 2 else sv.reshape(X.shape[0], -1)
 
 
