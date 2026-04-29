@@ -147,12 +147,12 @@ def append_chapter_3(document):
     )
     add_body(
         document,
-        "Key classes and objects in the developer data model are the CreditRiskPredictor service object, the fitted ColumnTransformer pipeline, estimator instances for Logistic Regression, Random Forest, and XGBoost, and explainer objects generated per model family. Together they form a typed transformation graph from user payload to interpreted decision output."
+        "Key classes and objects in the developer data model are the CreditRiskPredictor service object, the fitted ColumnTransformer pipeline, estimator instances for Logistic Regression, Random Forest, and XGBoost, and explainer objects generated per model family. Together they form a typed transformation graph from user payload to interpreted decision output. The transformation pipeline is summarised in Figure 3.2."
     )
     add_image_placeholder(
         document,
-        "ER Diagram or Database Schema",
-        "Since no relational database is used, provide a data-structure diagram showing raw dataset fields, transformed feature matrix, model artifacts, and API JSON contracts."
+        "Data Transformation Pipeline Diagram",
+        "Provide a diagram showing raw JSON input, validation, preprocessing branches, the merged feature matrix, model inference, and SHAP explanation output."
     )
 
     add_heading(document, "3.4 Implementation Logic and Key Algorithms", size=13)
