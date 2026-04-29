@@ -2,11 +2,12 @@ from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-from docx.shared import Pt
+from docx.shared import Pt, Inches
 from pathlib import Path
 
 
 DOC_PATH = r"c:\Users\kafis\OneDrive - Eotvos Lorand Tudomanyegyetem\Asztal\Kafi Thesis\credit-risk-prediction-ml\documentation\ELTE_Thesis_Documentation.docx"
+FIGURE_3_1_PATH = Path(__file__).with_name("thesis_class_uml.png")
 
 
 def _set_run_font(run, *, bold=False, size=12):
@@ -62,6 +63,29 @@ def add_image_placeholder(document, placeholder_text, instruction_text):
     spacer.paragraph_format.space_after = Pt(6)
 
 
+def add_captioned_image(document, image_path, figure_title, caption_text):
+    figure = document.add_paragraph()
+    figure.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    figure.paragraph_format.space_after = Pt(2)
+
+    run = figure.add_run()
+    if image_path.exists():
+        run.add_picture(str(image_path), width=Inches(6.3))
+    else:
+        run.add_text(f"[Missing figure file: {image_path.name}]")
+
+    caption = document.add_paragraph()
+    caption.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    caption.paragraph_format.line_spacing = 1.0
+    caption.paragraph_format.space_after = Pt(6)
+
+    caption_run = caption.add_run(f"Figure 3.1: {figure_title}\n")
+    _set_run_font(caption_run, bold=True, size=11)
+
+    body_run = caption.add_run(caption_text)
+    _set_run_font(body_run, bold=False, size=10)
+
+
 def add_pseudocode_block(document, title, lines):
     add_body(document, title)
     for line in lines:
@@ -89,12 +113,13 @@ def append_chapter_3(document):
     )
     add_body(
         document,
-        "The interaction pattern can be described as request-driven deterministic flow. The frontend obtains the form schema and model list from dedicated endpoints, builds the UI dynamically, and submits one structured applicant record. The backend then executes an invariant sequence: validate input schema and ranges, transform by fitted pipeline, compute class and probability, derive risk level, then compute explanation vectors. This sequencing enforces a stable contract between modules and avoids route-level code duplication."
+        "The interaction pattern can be described as request-driven deterministic flow. The frontend obtains the form schema and model list from dedicated endpoints, builds the UI dynamically, and submits one structured applicant record. The backend then executes an invariant sequence: validate input schema and ranges, transform by fitted pipeline, compute class and probability, derive risk level, then compute explanation vectors. This sequencing enforces a stable contract between modules and avoids route-level code duplication. The complete class and module relationships are summarised in Figure 3.1."
     )
-    add_image_placeholder(
+    add_captioned_image(
         document,
-        "System Architecture Diagram / UML Class Diagram",
-        "Provide a detailed UML or flow diagram showing how the main components communicate."
+        FIGURE_3_1_PATH,
+        "Thesis Class UML Diagram",
+        "UML class diagram derived from the implemented codebase. It shows the configuration objects, Flask application layer, CreditRiskPredictor orchestrator, preprocessing and training modules, validation logic, explainability modules, and the wrapper used for LIME explanations."
     )
 
     add_heading(document, "3.2 Technology Stack", size=13)

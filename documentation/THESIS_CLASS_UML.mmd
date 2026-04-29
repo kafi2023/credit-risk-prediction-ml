@@ -1,0 +1,172 @@
+classDiagram
+direction LR
+
+class Config <<configuration>> {
+  +SECRET_KEY: str
+  +DEBUG: bool
+  +HOST: str
+  +PORT: int
+}
+
+class ModelConfig <<configuration>> {
+  +TEST_SIZE: float
+  +RANDOM_STATE: int
+  +CV_FOLDS: int
+  +LOGISTIC_REGRESSION_PARAMS: dict
+  +RANDOM_FOREST_PARAMS: dict
+  +XGBOOST_PARAMS: dict
+}
+
+class ExplainabilityConfig <<configuration>> {
+  +SHAP_SAMPLES: int
+  +LIME_SAMPLES: int
+  +TOP_FEATURES: int
+}
+
+class data_loader <<module>> {
+  +COLUMN_NAMES: list
+  +NUMERICAL_COLUMNS: list
+  +CATEGORICAL_COLUMNS: list
+  +CATEGORY_MAPPINGS: dict
+  +TARGET_MAPPING: dict
+  +TARGET_LABELS: dict
+  +load_german_credit(path, decode_categories, encode_target)
+  +get_feature_target_split(df)
+  +_sample_numeric(rng, label, column)
+  +_sample_category(rng, label, column)
+  +_build_fallback_dataset()
+}
+
+class preprocessor <<module>> {
+  +PROCESSED_DIR: Path
+  +MODELS_DIR: Path
+  +build_preprocessor()
+  +prepare_data(test_size, random_state, use_smote, save)
+  +load_processed_data()
+  +load_preprocessor()
+  +get_feature_names(preprocessor)
+  +_save_artifacts(X_train, X_test, y_train, y_test, preprocessor)
+  +_ensure_artifacts()
+}
+
+class train_models <<module>> {
+  +SUPPORTED_MODEL_NAMES: dict
+  +build_logistic_regression(**kwargs)
+  +build_random_forest(**kwargs)
+  +build_xgboost(y_train, **kwargs)
+  +train_all_models(X_train, y_train, save, tune)
+  +ensure_trained_models()
+  +load_model(name)
+  +_class_weight_ratio(y)
+  +_slug(name)
+}
+
+class evaluate <<module>> {
+  +evaluate_model(model, X_test, y_test, model_name)
+  +cross_validate_model(model, X, y, cv_folds, random_state, model_name)
+  +comparison_table(results)
+  +cv_comparison_table(cv_results)
+  +print_classification_report(model, X_test, y_test, model_name)
+  +get_confusion_matrix(model, X_test, y_test)
+}
+
+class input_validator <<module>> {
+  +ALL_FIELDS: list
+  +validate_input(data)
+  +get_input_schema()
+}
+
+class shap_explainer <<module>> {
+  +create_explainer(model, X_background)
+  +explain_prediction(model, X_instance, feature_names, X_background)
+  +get_global_importance(model, X, feature_names, max_samples, X_background)
+  +plot_waterfall(model, X_instance, feature_names, save_path, X_background)
+  +plot_summary(model, X, feature_names, save_path, max_samples, X_background)
+  +plot_bar_importance(model, X, feature_names, save_path, max_samples, X_background)
+  +_compute_shap_values(explainer, X)
+  +_compute_shap_matrix(explainer, X)
+  +_risk_level(prob)
+}
+
+class lime_explainer <<module>> {
+  +create_lime_explainer(X_train, feature_names, class_names, categorical_features, num_samples)
+}
+
+class LimeExplainerWrapper <<wrapper>> {
+  +feature_names: list
+  +class_names: list
+  +num_samples: int
+  +explainer
+  +__init__(X_train, feature_names, class_names, categorical_features, num_samples)
+  +explain_prediction(model, X_instance, num_features)
+  +plot_explanation(model, X_instance, save_path, num_features)
+}
+
+class CreditRiskPredictor <<singleton>> {
+  -model_name: str
+  -model
+  -preprocessor
+  -feature_names: list
+  -_X_background
+  -_instance
+  +__init__(model_name)
+  +predict(raw_input, explain)
+  +get_instance(model_name)
+  +available_models()
+  +input_schema()
+}
+
+class app <<module>> {
+  +app: Flask
+  +index()
+  +schema()
+  +models()
+  +predict()
+  +health()
+}
+
+class Flask <<external>>
+class ColumnTransformer <<external>>
+class Pipeline <<external>>
+class SimpleImputer <<external>>
+class StandardScaler <<external>>
+class OneHotEncoder <<external>>
+class LogisticRegression <<external>>
+class RandomForestClassifier <<external>>
+class XGBClassifier <<external>>
+class TreeExplainer <<external>>
+class LinearExplainer <<external>>
+class KernelExplainer <<external>>
+class LimeTabularExplainer <<external>>
+
+app ..> Flask
+app ..> Config
+app ..> CreditRiskPredictor
+
+CreditRiskPredictor ..> input_validator
+CreditRiskPredictor ..> preprocessor
+CreditRiskPredictor ..> train_models
+CreditRiskPredictor ..> shap_explainer
+CreditRiskPredictor ..> ExplainabilityConfig
+
+preprocessor ..> data_loader
+preprocessor ..> ColumnTransformer
+preprocessor ..> Pipeline
+preprocessor ..> SimpleImputer
+preprocessor ..> StandardScaler
+preprocessor ..> OneHotEncoder
+
+train_models ..> preprocessor
+train_models ..> evaluate
+train_models ..> LogisticRegression
+train_models ..> RandomForestClassifier
+train_models ..> XGBClassifier
+
+input_validator ..> data_loader
+
+shap_explainer ..> TreeExplainer
+shap_explainer ..> LinearExplainer
+shap_explainer ..> KernelExplainer
+
+lime_explainer ..> LimeExplainerWrapper
+LimeExplainerWrapper ..> LimeTabularExplainer
